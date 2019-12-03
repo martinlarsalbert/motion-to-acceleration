@@ -4,16 +4,21 @@ import sympy.physics.mechanics as me
 def substitute_dynamic_symbols(expression):
     dynamic_symbols = me.find_dynamicsymbols(expression)
     derivatives = find_derivatives(dynamic_symbols)
-    none_derivatives = dynamic_symbols - derivatives
 
-    # First susbtitute the Derivatives:
+    derivative_list = []
+    # First susbtitute the Derivatives starting with the highest order (since higher order could be broken up in lower order)
     subs = []
-    for derivative in list(derivatives):
-        name = find_name(derivative)
-        symbol = sp.Symbol(name)
-        subs.append((derivative, symbol))
+    for order in reversed(sorted(derivatives.keys())):
+        for derivative in list(derivatives[order]):
+            name = find_name(derivative)
+            symbol = sp.Symbol(name)
+            subs.append((derivative, symbol))
+            derivative_list.append(derivative)
 
     new_expression_derivatives = expression.subs(subs)
+
+
+    none_derivatives = dynamic_symbols - set(derivative_list)
 
     # ...Then substitute the dynamic symbols
     subs = []
@@ -34,15 +39,19 @@ def find_name(dynamic_symbol):
         name = dynamic_symbol.name
     return name
 
-def find_derivatives(dynamic_symbols:set)->set:
+def find_derivatives(dynamic_symbols:set)->dict:
 
-    derivatives = []
+    derivatives = {}
 
     for dynamic_symbol in list(dynamic_symbols):
         if isinstance(dynamic_symbol, sp.Derivative):
-            derivatives.append(dynamic_symbol)
+            order = dynamic_symbol.args[1][1]
 
-    derivatives = set(derivatives)
+            if not order in derivatives:
+                derivatives[order] = []
+
+            derivatives[order].append(dynamic_symbol)
+
     return derivatives
 
 
@@ -62,5 +71,12 @@ def find_derivative_name(derivative):
 def lambdify(expression):
     new_expression = substitute_dynamic_symbols(expression)
     args = new_expression.free_symbols
-    lambda_function = sp.lambdify(args, new_expression, modules='numpy')
+
+    # Rearranging to get the parameters in alphabetical order:
+    symbol_dict = {symbol.name: symbol for symbol in args}
+    symbols = []
+    for symbol_name in sorted(symbol_dict.keys()):
+        symbols.append(symbol_dict[symbol_name])
+
+    lambda_function = sp.lambdify(symbols, new_expression, modules='numpy')
     return lambda_function
