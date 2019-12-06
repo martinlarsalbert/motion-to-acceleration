@@ -2,3 +2,4 @@ sympy
 pandas
 matplotlib
 ipyvolume
+pydy
