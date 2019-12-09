@@ -3,3 +3,4 @@ pandas
 matplotlib
 ipyvolume
 pydy
+pytest

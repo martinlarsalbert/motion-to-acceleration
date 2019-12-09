@@ -70,7 +70,7 @@ right_hand_side = generate_ode_function(kane.forcing_full, coordinates,
 
 
 def simulate(t, force_torque, I_xx, I_yy, I_zz, mass, initial_coordinates=[0, 0, 0, 0, 0, 0],
-             initial_speeds=[0, 0, 0, 0, 0, 0]):
+             initial_speeds=[0, 0, 0, 0, 0, 0])->pd.DataFrame:
     """
     Simulate a rigid body in 6 degrees of freedom under the influence of external torque and forces applied in the body
     reference frame
@@ -85,7 +85,7 @@ def simulate(t, force_torque, I_xx, I_yy, I_zz, mass, initial_coordinates=[0, 0,
     :param mass: mass of body [kg]
     :param initial_coordinates: [x0, y0, z0, phi, theta, psi]
     :param initial_speeds: [x01d, y01d, z01d, phi1d, theta1d, psi1d]
-    :return:
+    :return: Pandas data frame with time series.
     """
 
     start = np.array(initial_coordinates + initial_speeds)
