@@ -18,12 +18,13 @@ N = me.ReferenceFrame('N')
 
 S = N.orientnew('S', 'Body', [psi,theta,phi],'ZYX')
 
-M = me.Point('M')  # Origo of measurement system
-M.set_vel(N, 0)
+M = me.Point('M')
+O = M.locatenew('P',0)
+M.set_vel(N,0)
+O.set_vel(S,u*S.x + v*S.y + w*S.z)
+O.v1pt_theory(M,N,S)
 
-O = me.Point('O') # Origo of ship
-O.set_pos(M,x0*N.x + y0*N.y + z0*N.z)
-O.set_vel(N,x01d*N.x + y01d*N.y + z01d*N.z)
+velocity_matrix = O.vel(N).to_matrix(N)
 
 mass = sp.symbols('m')
 
@@ -42,16 +43,16 @@ force = (O, force_vector)
 torque = (S, torque_vector)
 
 
-kinematical_differential_equations = [x0.diff() - x01d,
-                                      y0.diff() - y01d,
-                                      z0.diff() - z01d,
+kinematical_differential_equations = [x0.diff() - velocity_matrix[0],
+                                      y0.diff() - velocity_matrix[1],
+                                      z0.diff() - velocity_matrix[2],
                                       phi.diff() - phi1d,
                                       theta.diff() - theta1d,
                                       psi.diff() - psi1d,
                                      ]
 
 coordinates = [x0, y0, z0, phi, theta, psi]
-speeds = [x01d, y01d, z01d, phi1d, theta1d, psi1d]
+speeds = [u, v, w, phi1d, theta1d, psi1d]
 kane = me.KanesMethod(N, coordinates, speeds, kinematical_differential_equations)
 
 loads = [force,
@@ -84,7 +85,7 @@ def simulate(t, force_torque, I_xx, I_yy, I_zz, mass, initial_coordinates=[0, 0,
     :param I_zz: yaw inertia [kg*m^2]
     :param mass: mass of body [kg]
     :param initial_coordinates: [x0, y0, z0, phi, theta, psi]
-    :param initial_speeds: [x01d, y01d, z01d, phi1d, theta1d, psi1d]
+    :param initial_speeds: [u, v, w, phi1d, theta1d, psi1d]  Where u, v w are speeds in ship fixed system
     :return: Pandas data frame with time series.
     """
 

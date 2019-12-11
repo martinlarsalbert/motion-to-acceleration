@@ -18,8 +18,6 @@ def test_simulate():
 def test_ball_drop():
     """
     Simulate a ball drop and check the result
-
-    :param point:
     :return:
     """
 
@@ -37,3 +35,27 @@ def test_ball_drop():
     exprected_position = [0,0,s,0,0,0]
 
     assert_almost_equal(position, exprected_position)
+
+def test_circle():
+    """
+    Simulate a point mass traveling in a steady circle
+    :return:
+    """
+
+    radius = 10  # Radius of rotation [m]
+    w = 0.1  # Angle velocity [rad/s]
+    V = radius * w  # Speed of point [m/s]
+    t = np.linspace(0, 2 * np.pi / w, 1000)
+
+    mass = 1
+
+    expected_acceleration = -radius * w ** 2
+    expected_force = mass * expected_acceleration
+
+    df = rbd.simulate(t=t, force_torque=[0, -expected_force, 0, 0, 0, 0], I_xx=1, I_yy=1, I_zz=1, mass=mass,
+                  initial_speeds=[V, 0, 0, 0, 0, w], initial_coordinates=[0, -radius, 0, 0, 0, 0])
+
+    R = np.sqrt(df['x0'] ** 2 + df['y0'] ** 2)
+    expected_R = np.ones(len(df))*radius
+
+    assert_almost_equal(R, expected_R, decimal=6)  # Make sure that the simulation has a steady turning diameter.
