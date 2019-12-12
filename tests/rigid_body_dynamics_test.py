@@ -59,3 +59,18 @@ def test_circle():
     expected_R = np.ones(len(df))*radius
 
     assert_almost_equal(R, expected_R, decimal=6)  # Make sure that the simulation has a steady turning diameter.
+
+def test_angular_acceleration():
+
+    t = np.linspace(0, 10, 100)
+    mass = 2
+
+    I_zz = 10
+
+    torque_yaw = 1
+    df = rbd.simulate(t=t, force_torque=[0, 0, 0, 0, 0, torque_yaw], I_xx=1, I_yy=1, I_zz=I_zz, mass=mass)
+
+    w1d = torque_yaw/I_zz
+    w = w1d*t
+
+    assert_almost_equal(df['psi1d'], w)

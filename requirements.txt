@@ -5,3 +5,4 @@ ipyvolume
 pydy
 pytest
 versioneer
+wheel
