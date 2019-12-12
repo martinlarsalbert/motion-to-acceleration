@@ -1,6 +1,6 @@
 import sympy as sp
 from rigidbody.rigid_body_dynamics import S,N
-from substitute_dynamic_symbols import lambdify
+from rigidbody.substitute_dynamic_symbols import lambdify
 
 import ipyvolume as ipv
 import ipywidgets as widgets
@@ -34,6 +34,7 @@ def rotate2(p, phi_=0, theta_=0, psi_=0):
 class TrackPlot3dWidget:
     def __init__(self, df: pd.DataFrame):
         self.figure = ipv.figure(animation=0., animation_exponent=0, width=800, height=800)
+        #self.figure.camera_control = 'orbit'
 
         self.lpp = lpp = 1
 
@@ -60,8 +61,11 @@ class TrackPlot3dWidget:
 
         self.df = df
 
+        min = df.index[0]
+        max = df.index[-1]
+        step = (max-min)/100
         self.ui = widgets.interact(self.update,
-                                   t=widgets.FloatSlider(value=0, min=df.index[0], max=df.index[-1], step=1))
+                                   t=widgets.FloatSlider(value=0, min=min, max=max, step=step))
 
     def load_ship_geometry(self):
         self.N = 10
@@ -86,14 +90,18 @@ class TrackPlot3dWidget:
         index = np.argmin(np.abs(self.df.index - t))
         s = self.df.iloc[index]
 
-        phi = s['psi']
+        phi = s['phi']
         theta = s['theta']
         psi = s['psi']
         x0 = s['x0']
         y0 = s['y0']
         z0 = s['z0']
 
-        print("update with", t, phi, theta, psi)
+        print("t:%0.1f [s]" % t)
+        print("phi:%0.1f [deg]" % np.rad2deg(phi))
+        print("theta:%0.1f [deg]" % np.rad2deg(theta))
+        print("psi:%0.1f [deg]" % np.rad2deg(psi))
+
 
         angles = [phi, theta, psi]
 
@@ -120,8 +128,8 @@ class TrackPlot3dWidget:
         self.port.z = Z_
 
 
-def track_plot(df, ax, l=1, time_step='1S'):
-    df.plot(x='y0', y='x0', ax=ax)
+def track_plot(df, ax, l=1, time_step='1S', **kwargs):
+    df.plot(x='y0', y='x0', ax=ax, **kwargs)
 
     df_ = df.copy()
     df_.index = pd.TimedeltaIndex(df_.index, unit='s')
