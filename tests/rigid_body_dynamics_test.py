@@ -1,6 +1,6 @@
 from numpy.testing import assert_almost_equal
 
-import rigidbody.rigid_body_dynamics as rbd
+import rigidbodysimulator.rigid_body_dynamics as rbd
 
 import numpy as np
 
