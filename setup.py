@@ -34,7 +34,6 @@ setuptools.setup(
     packages=['rigidbodysimulator'],
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: ",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.5',
