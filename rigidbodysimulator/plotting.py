@@ -1,6 +1,6 @@
 import sympy as sp
-from rigidbody.rigid_body_dynamics import S,N
-from rigidbody.substitute_dynamic_symbols import lambdify
+from rigidbodysimulator.rigid_body_dynamics import S,N
+from rigidbodysimulator.substitute_dynamic_symbols import lambdify
 
 import ipyvolume as ipv
 import ipywidgets as widgets

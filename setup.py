@@ -23,18 +23,17 @@ extras = {
 test_requirements = ['pytest']
 
 setuptools.setup(
-    name="rigidbody",
+    name="rigidbodysimulator",
     version=versioneer.get_version(),
     author="SSPA",
     author_email="maa@sspa.se",
-    description="rigidbody simulator",
+    description="rigidbodysimulator simulator",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/martinlarsalbert/motion-to-acceleration",
-    packages=['rigidbody'],
+    packages=['rigidbodysimulator'],
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: ",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.5',
@@ -44,7 +43,7 @@ setuptools.setup(
     extras_require=extras,
 
     package_data={
-        'rigidbody': [],
+        'rigidbodysimulator': [],
       },
     scripts=[]
 
