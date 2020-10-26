@@ -1,7 +1,6 @@
 sympy
 pandas
 matplotlib
-ipyvolume
 pydy
 pytest
 versioneer
