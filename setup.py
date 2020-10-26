@@ -36,6 +36,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
+    extras_require={'plot': ['ipvolume', 'ipywidgets']}
     python_requires='>=3.5',
 
     install_requires=requirements,
